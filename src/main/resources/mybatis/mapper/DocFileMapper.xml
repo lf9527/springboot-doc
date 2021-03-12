@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doc.management.dao.DocFileMapper">
+	
+	<select id="findDocFileList" resultType="com.doc.management.bean.DocFileEntity">
+		SELECT * FROM doc_file_t
+	</select>
+	
+	<select id="findDocFileById" parameterType="Integer"
+		resultType="com.doc.management.bean.DocFileEntity">
+		SELECT * FROM doc_file_t WHERE id = #{id}
+	</select>
+	
+	<insert id="insert" parameterType="com.doc.management.bean.DocFileEntity"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into doc_file_t
+		(
+			parent_id,
+			file_name,
+			file_path,
+			is_dir,
+			create_date
+		)
+		values
+		(
+			#{parentId},
+			#{fileName},
+			#{filePath},
+			#{isDir},
+			now()
+		)
+	</insert>
+	
+	<delete id="delete" parameterType="Integer">
+		delete from doc_file_t where id = #{id}
+	</delete>
+</mapper>

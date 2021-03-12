@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doc.management.dao.WorkNoticeMapper">
+	
+	<select id="findWorkNoticeList" resultType="com.doc.management.bean.WorkNoticeEntity">
+		SELECT * FROM work_notice_t
+	</select>
+	
+	<select id="findWorkNoticeById" parameterType="Integer"
+		resultType="com.doc.management.bean.WorkNoticeEntity">
+		SELECT * FROM work_notice_t WHERE id = #{id}
+	</select>
+	
+	<insert id="insert" parameterType="com.doc.management.bean.WorkNoticeEntity"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into work_notice_t
+		(
+			title,
+			content,
+			create_date
+		)
+		values
+		(
+			#{title},
+			#{content},
+			now()
+		)
+	</insert>
+	<delete id="delete" parameterType="Integer">
+		delete from work_notice_t where id = #{id}
+	</delete>
+	
+</mapper>
