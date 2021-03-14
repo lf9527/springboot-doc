@@ -24,7 +24,7 @@
 		(
 			#{title},
 			#{content},
-			now()
+			#{createDate}
 		)
 	</insert>
 	<delete id="delete" parameterType="Integer">

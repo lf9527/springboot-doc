@@ -16,6 +16,8 @@ public class DocFileEntity implements Serializable {
 	
 	private String fileName;
 	
+	private String newFileName;
+	
 	private String filePath;
 	
 	private Long isDir;
@@ -57,6 +59,14 @@ public class DocFileEntity implements Serializable {
 		this.fileName = fileName;
 	}
 
+	public String getNewFileName() {
+		return newFileName;
+	}
+
+	public void setNewFileName(String newFileName) {
+		this.newFileName = newFileName;
+	}
+
 	public String getFilePath() {
 		return filePath;
 	}
@@ -83,8 +93,9 @@ public class DocFileEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return "DocFileEntity [id=" + id + ", parentId=" + parentId + ", fileName=" + fileName + ", filePath="
-				+ filePath + ", isDir=" + isDir + ", createDate=" + createDate + ", children=" + children + "]";
+		return "DocFileEntity [id=" + id + ", parentId=" + parentId + ", fileName=" + fileName + ", newFileName="
+				+ newFileName + ", filePath=" + filePath + ", isDir=" + isDir + ", createDate=" + createDate
+				+ ", children=" + children + "]";
 	}
 	
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.doc.management.VO.DocFileVO;
 import com.doc.management.bean.DocFileEntity;
+import com.doc.management.constant.Constant;
 import com.doc.management.dao.DocFileMapper;
 import com.doc.management.service.DocFileService;
 import com.github.pagehelper.PageHelper;
@@ -24,6 +25,8 @@ public class DocFileServiceImpl implements DocFileService {
 	
 	@Value("${filedir.path}")
 	private String dirPath;
+	
+	private String separator = Constant.separator;
 
 	@Override
 	public PageInfo<DocFileEntity> findDocFileList(Integer pageNum, Integer pageSize) {
@@ -51,14 +54,14 @@ public class DocFileServiceImpl implements DocFileService {
 	@Override
 	public List<DocFileVO> findDirFileList() {
 		File dir = new File(dirPath);
-		Long initId = 0L;
+		Long initId = 1L;
 		List<DocFileVO> dirFileList = new ArrayList<DocFileVO>();
 		DocFileVO entity = new DocFileVO();
 		entity.setId(initId);
 		entity.setParentId(-1L);
-		entity.setFilePath(dirPath);
 		entity.setIsDir(true);
 		String fileName = dirPath.substring(dirPath.lastIndexOf("/") + 1);
+		entity.setFilePath(fileName);
 		entity.setFileName(fileName);
 		dirFileList.add(entity);
 		System.out.println("date : " + new Date());
@@ -80,7 +83,7 @@ public class DocFileServiceImpl implements DocFileService {
             DocFileVO entity = new DocFileVO();
             entity.setId(initId);
             entity.setParentId(parentEntity.getId());
-            String filePath = parentEntity.getFilePath() + File.separator + tempFileName;
+            String filePath = parentEntity.getFilePath() + separator + tempFileName;
             if (file.isDirectory()) {
             	entity.setIsDir(true);
             }
@@ -111,7 +114,7 @@ public class DocFileServiceImpl implements DocFileService {
             DocFileVO entity = new DocFileVO();
             entity.setId(initId);
             entity.setParentId(0L);
-            String filePath = dirFilePath + File.separator + tempFileName;
+            String filePath = dirFilePath + separator + tempFileName;
             if (file.isDirectory()) {
             	entity.setIsDir(true);
             }

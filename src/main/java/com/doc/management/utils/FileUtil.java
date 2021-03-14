@@ -1,10 +1,13 @@
 package com.doc.management.utils;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.doc.management.bean.DocFileEntity;
+import com.doc.management.constant.Constant;
 
 public class FileUtil {
 
@@ -24,7 +27,7 @@ public class FileUtil {
     }
     
     public static void main(String[] args) {
-		String dirPath = "E:/vue3/express";
+		/*String dirPath = "E:/vue3/express";
 		File dir = new File(dirPath);
 		Long initId = 0L;
 		List<DocFileEntity> dirFile = new ArrayList<DocFileEntity>();
@@ -37,7 +40,9 @@ public class FileUtil {
 		entity.setFileName(fileName);
 		dirFile.add(entity);
 		findFileList(dir, dirFile, entity, initId, fileName);
-		System.out.println(dirFile);
+		System.out.println(dirFile);*/
+    	String originalFilename = "abs.xlsx";
+    	System.out.println(originalFilename.substring(originalFilename.indexOf(".")));
 	}
     
     public static void findFileList(File dir, List<DocFileEntity> dirFile, DocFileEntity parentEntity, Long initId, String fileName) {
@@ -67,4 +72,15 @@ public class FileUtil {
         }
         parentEntity.setChildren(dirFileTemp);
     }
+    
+    public static void uploadFile(byte[] file, String filePath, String fileName) throws IOException{
+        File targetFile = new File(filePath);
+        if(!targetFile.exists()){
+            targetFile.mkdirs();
+        }
+        FileOutputStream out = new FileOutputStream(filePath + Constant.separator +  fileName);
+        out.write(file);
+        out.flush();
+        out.close();
+   }
 }

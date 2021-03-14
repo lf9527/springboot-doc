@@ -16,6 +16,8 @@ public class DocFileVO implements Serializable {
 	
 	private String fileName;
 	
+	private String newFileName;
+	
 	private String label;
 	
 	private String filePath;
@@ -50,6 +52,14 @@ public class DocFileVO implements Serializable {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 		this.label = this.fileName;
+	}
+
+	public String getNewFileName() {
+		return newFileName;
+	}
+
+	public void setNewFileName(String newFileName) {
+		this.newFileName = newFileName;
 	}
 
 	public String getLabel() {
@@ -94,9 +104,9 @@ public class DocFileVO implements Serializable {
 
 	@Override
 	public String toString() {
-		return "DocFileVO [id=" + id + ", parentId=" + parentId + ", fileName=" + fileName + ", label=" + label
-				+ ", filePath=" + filePath + ", isDir=" + isDir + ", children=" + children + ", createDate="
-				+ createDate + "]";
+		return "DocFileVO [id=" + id + ", parentId=" + parentId + ", fileName=" + fileName + ", newFileName="
+				+ newFileName + ", label=" + label + ", filePath=" + filePath + ", isDir=" + isDir + ", children="
+				+ children + ", createDate=" + createDate + "]";
 	}
 
 }

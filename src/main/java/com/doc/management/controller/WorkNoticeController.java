@@ -1,5 +1,7 @@
 package com.doc.management.controller;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +36,7 @@ public class WorkNoticeController {
 	@CrossOrigin
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public Integer save(@RequestBody WorkNoticeEntity entity) {
-		
+		entity.setCreateDate(new Date());
 		return workNoticeService.save(entity);
 	}
 	
