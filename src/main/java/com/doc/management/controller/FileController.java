@@ -31,11 +31,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.druid.util.StringUtils;
 import com.doc.management.VO.DocFileVO;
 import com.doc.management.bean.DocFileEntity;
 import com.doc.management.constant.Constant;
 import com.doc.management.service.DocFileService;
 import com.doc.management.utils.FileUtil;
+import com.github.pagehelper.util.StringUtil;
 import com.grapecity.documents.excel.IWorksheet;
 import com.grapecity.documents.excel.Workbook;
 
@@ -191,7 +193,11 @@ public class FileController {
 			return new ResponseEntity<String>("请选择要上传的文件", HttpStatus.FORBIDDEN);
 		}
 		byte[] fileBytes = file.getBytes();
-		String filePath = dirPath + separator + docFile.getFilePath();
+		String parentFilePath = docFile.getFilePath();
+		String filePath = dirPath;
+		if(StringUtil.isNotEmpty(parentFilePath)){
+			filePath += separator + parentFilePath.substring(parentFilePath.indexOf(Constant.separator) + 1);
+		}
 		//取得当前上传文件的文件名称
 		String originalFilename = file.getOriginalFilename();
 		//生成文件名

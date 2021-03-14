@@ -41,8 +41,8 @@ public class FileUtil {
 		dirFile.add(entity);
 		findFileList(dir, dirFile, entity, initId, fileName);
 		System.out.println(dirFile);*/
-    	String originalFilename = "abs.xlsx";
-    	System.out.println(originalFilename.substring(originalFilename.indexOf(".")));
+    	String originalFilename = "dirFile/file2";
+    	System.out.println(originalFilename.substring(originalFilename.indexOf("/")+1));
 	}
     
     public static void findFileList(File dir, List<DocFileEntity> dirFile, DocFileEntity parentEntity, Long initId, String fileName) {

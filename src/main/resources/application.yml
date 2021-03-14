@@ -8,6 +8,12 @@ spring:
     password: feng
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+
 
 mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
@@ -22,3 +28,4 @@ pagehelper:
   
 filedir:
   path: F:/vue/dirFile
+  
