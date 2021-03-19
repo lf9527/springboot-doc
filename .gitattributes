@@ -1,4 +1,4 @@
-E:/vue3/doc-env-production/docmgt-production filter=lfs diff=lfs merge=lfs -text
+E:/vue3/gitcodeDocmanagement/springboot-doc filter=lfs diff=lfs merge=lfs -text
 *.exe filter=lfs diff=lfs merge=lfs -text
 *.zip filter=lfs diff=lfs merge=lfs -text
 *.msi filter=lfs diff=lfs merge=lfs -text
