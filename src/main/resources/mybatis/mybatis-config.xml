@@ -12,6 +12,8 @@
 		<typeAlias alias="Long" type="java.lang.Long" />
 		<typeAlias alias="HashMap" type="java.util.HashMap" />
 		<typeAlias alias="ArrayList" type="java.util.ArrayList" />
+		<typeAlias alias="DocFileEntity" type="com.doc.management.bean.DocFileEntity"/>
+		<typeAlias alias="WorkNoticeEntity" type="com.doc.management.bean.WorkNoticeEntity"/>
 	</typeAliases>
 	
 </configuration>

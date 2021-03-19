@@ -8,9 +8,11 @@ public interface DocFileMapper {
 
 	List<DocFileEntity> findDocFileList();
 	
-	DocFileEntity findDocFileById(Integer id);
+	DocFileEntity findDocFileById(Long id);
 	
 	Integer insert(DocFileEntity entity);
 	
 	Integer delete(Integer id);
+
+	List<DocFileEntity> findAllDirFileList(Long parentId);
 }

@@ -35,7 +35,7 @@ public class DocFileServiceImpl implements DocFileService {
 	}
 
 	@Override
-	public DocFileEntity findDocFileById(Integer id) {
+	public DocFileEntity findDocFileById(Long id) {
 		return docFileMapper.findDocFileById(id);
 	}
 
@@ -100,6 +100,11 @@ public class DocFileServiceImpl implements DocFileService {
 
 	@Override
 	public List<DocFileVO> findDirFileListByDirPath(String dirFilePath) {
+		
+		return findLocalDirFileListByDirPath(dirFilePath);
+	}
+	
+	private List<DocFileVO> findLocalDirFileListByDirPath(String dirFilePath) {
 		File dir = new File(dirFilePath);
 		if (!dir.exists() || !dir.isDirectory()) {
             return new ArrayList<DocFileVO>();
@@ -125,6 +130,32 @@ public class DocFileServiceImpl implements DocFileService {
             entity.setFileName(tempFileName);
             dirFileTemp.add(entity);
         }
+		return dirFileTemp;
+	}
+
+	@Override
+	public List<DocFileEntity> findAllDirFileList() {
+		
+		return docFileMapper.findAllDirFileList(0L);
+	}
+	
+	@Override
+	public List<DocFileEntity> findAllDirTreeList() {
+		List<DocFileEntity> dirFileList = docFileMapper.findAllDirFileList(0L);
+		
+		return filterFile(dirFileList);
+	}
+
+	private List<DocFileEntity> filterFile(List<DocFileEntity> dirFileList) {
+		List<DocFileEntity> dirFileTemp = new ArrayList<DocFileEntity>();
+		for(DocFileEntity dir : dirFileList){
+			if(dir.getIsDir() == 1){
+				if(!dir.getChildren().isEmpty() && dir.getChildren().size() > 0){
+					dir.setChildren(this.filterFile(dir.getChildren()));
+				}
+				dirFileTemp.add(dir);
+			}
+		}
 		return dirFileTemp;
 	}
 }

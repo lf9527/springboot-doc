@@ -24,6 +24,18 @@ public class DocFileController {
 	private DocFileService docFileService;
 	
 	@CrossOrigin
+	@RequestMapping(value = "/getAllDirFile", method = RequestMethod.GET)
+	public List<DocFileEntity> getAllDirFileList() {
+		return docFileService.findAllDirFileList();
+	}
+	
+	@CrossOrigin
+	@RequestMapping(value = "/getAllDirTree", method = RequestMethod.GET)
+	public List<DocFileEntity> getAllDirTreeList() {
+		return docFileService.findAllDirTreeList();
+	}
+	
+	@CrossOrigin
 	@RequestMapping(value = "/getAllData", method = RequestMethod.GET)
 	public List<DocFileVO> getAllDataList() {
 		return docFileService.findDirFileList();
@@ -43,7 +55,7 @@ public class DocFileController {
 	
 	@CrossOrigin
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public DocFileEntity getDocFile(@PathVariable("id") Integer id) {
+	public DocFileEntity getDocFile(@PathVariable("id") Long id) {
 		return docFileService.findDocFileById(id);
 	}
 	

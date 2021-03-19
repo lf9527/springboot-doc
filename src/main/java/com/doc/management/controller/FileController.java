@@ -110,11 +110,17 @@ public class FileController {
 	}
 
 	@CrossOrigin
-	@RequestMapping(value = "/api/downloadFile", method = RequestMethod.GET)
-	public HttpServletResponse download(HttpServletResponse response,
-			@RequestParam(value = "filePath", required = true) String filePath) {
+	@RequestMapping(value = "/api/download/{id}", method = RequestMethod.GET)
+	public void download(HttpServletResponse response,
+			@PathVariable(value = "id", required = true) Long id) {
+		DocFileEntity entity = docFileService.findDocFileById(id);
+		if(entity == null){
+			return ;
+		}
+		String filePath = dirPath.substring(0, dirPath.lastIndexOf(Constant.separator)) + Constant.separator + entity.getFilePath() + Constant.separator + entity.getFileName();
+		File file = new File(filePath);
+		OutputStream toClient = null;
 		try {
-			File file = new File(dirPath + separator + filePath);
 			InputStream fis = new BufferedInputStream(new FileInputStream(filePath));
 			byte[] buffer = new byte[fis.available()];
 			fis.read(buffer);
@@ -125,21 +131,35 @@ public class FileController {
 			response.addHeader("Content-Disposition",
 					"attachment;filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
 			response.addHeader("Content-Length", "" + file.length());
-			OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
+			toClient = new BufferedOutputStream(response.getOutputStream());
 			response.setContentType("application/octet-stream");
 			toClient.write(buffer);
 			toClient.flush();
-			toClient.close();
+//			toClient.close();
+//			return response;
 		} catch (Exception e) {
 			e.printStackTrace();
+//			return null;
+		}finally{
+			if(toClient != null){
+				try {
+					toClient.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
-		return response;
 	}
 
 	@CrossOrigin
-	@RequestMapping(value = "/api/preview", method = RequestMethod.GET)
+	@RequestMapping(value = "/api/preview/{id}", method = RequestMethod.GET)
 	public void preview(HttpServletResponse response,
-			@RequestParam(value = "filePath", required = true) String filePath) {
+			@PathVariable(value = "id", required = true) Long id) {
+		DocFileEntity entity = docFileService.findDocFileById(id);
+		if(entity == null){
+			return ;
+		}
+		String filePath = dirPath.substring(0, dirPath.lastIndexOf(Constant.separator)) + Constant.separator + entity.getFilePath() + Constant.separator + entity.getFileName();
 		File file = new File(filePath);
 		if (file.exists()) {
 			byte[] data = null;
@@ -192,26 +212,63 @@ public class FileController {
 		if(file == null || file.isEmpty()){
 			return new ResponseEntity<String>("请选择要上传的文件", HttpStatus.FORBIDDEN);
 		}
+		Long parentId = docFile.getParentId();
+		if(null == parentId) {
+			parentId = 0L;
+		}
 		byte[] fileBytes = file.getBytes();
 		String parentFilePath = docFile.getFilePath();
-		String filePath = dirPath;
+		String baseDirPath = dirPath;
 		if(StringUtil.isNotEmpty(parentFilePath)){
-			filePath += separator + parentFilePath.substring(parentFilePath.indexOf(Constant.separator) + 1);
+			if(parentFilePath.indexOf(Constant.separator) > -1){
+				baseDirPath = dirPath.substring(0, dirPath.lastIndexOf(Constant.separator));
+				this.loopDirPath(baseDirPath, parentFilePath, parentId);
+				baseDirPath += Constant.separator + parentFilePath;
+			}
 		}
 		//取得当前上传文件的文件名称
 		String originalFilename = file.getOriginalFilename();
 		//生成文件名
 //		String fileName = UUID.randomUUID() + originalFilename.substring(originalFilename.indexOf("."));
 		String fileName = originalFilename;
-		FileUtil.uploadFile(fileBytes, filePath, fileName);
+		FileUtil.uploadFile(fileBytes, baseDirPath, fileName);
 		docFile.setNewFileName(fileName);
 		docFile.setFileName(originalFilename);
-		docFile.setFilePath(docFile.getFilePath() + Constant.separator + fileName);
-		if(docFile.getParentId() == null){
-			docFile.setParentId(1L);
-		}
+		docFile.setFilePath(parentFilePath);
+		docFile.setParentId(parentId);
+		docFile.setIsDir(0L);
 		docFileService.save(docFile);
 
 		return new ResponseEntity<String>("success", HttpStatus.OK);
+	}
+	
+	private void loopDirPath(String baseDirPath, String dirFilePath, Long parentId){
+		if(StringUtil.isEmpty(dirFilePath)){
+			return;
+		}
+		String[] dirPathArr = dirFilePath.trim().split(Constant.separator);
+		String dirPathTemp = null;
+		String filePath = null;
+		for(String path : dirPathArr){
+			if(null == dirPathTemp) {
+				dirPathTemp = path;
+				filePath = path;
+			}
+			else {
+				dirPathTemp += Constant.separator + path;
+				filePath = dirPathTemp.substring(0, dirPathTemp.lastIndexOf(Constant.separator));
+			}
+			if(FileUtil.mkDir(baseDirPath, dirPathTemp) == 1){//new dir
+				DocFileEntity docFile = new DocFileEntity();
+	    		docFile.setIsDir(1L);
+	    		docFile.setFileName(path);
+	    		docFile.setParentId(parentId);
+	    		docFile.setNewFileName(path);
+	    		docFile.setFilePath(filePath);
+	    		docFile.setCreateDate(new Date());
+	    		docFileService.save(docFile);
+	    		parentId = docFile.getId();
+			}
+		}
 	}
 }

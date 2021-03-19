@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.doc.management.bean.DocFileEntity;
 import com.doc.management.constant.Constant;
+import com.github.pagehelper.util.StringUtil;
 
 public class FileUtil {
 
@@ -41,8 +42,26 @@ public class FileUtil {
 		dirFile.add(entity);
 		findFileList(dir, dirFile, entity, initId, fileName);
 		System.out.println(dirFile);*/
-    	String originalFilename = "dirFile/file2";
-    	System.out.println(originalFilename.substring(originalFilename.indexOf("/")+1));
+    	String originalFilename = "E:/vue3/gitcodeDocmanagement/dirFile";
+    	String filePath = "dirFile/file1/file2/file3";
+    	String dir = originalFilename.substring(0, originalFilename.lastIndexOf(Constant.separator));
+    	System.out.println(dir);
+    	filePath = filePath.substring(filePath.indexOf(dir) + dir.length() + 1);
+    	System.out.println(filePath.indexOf("/")+1);
+    	System.out.println(filePath);
+    	
+	}
+    
+    public static int mkDir(String dirPath, String dirFilePath){
+		if(StringUtil.isEmpty(dirFilePath)){
+			return -1;
+		}
+		File file = new File(dirPath, dirFilePath);
+    	if(!file.exists() || !file.isDirectory()){
+    		file.mkdir();
+    		return 1;
+    	}
+    	return 0;
 	}
     
     public static void findFileList(File dir, List<DocFileEntity> dirFile, DocFileEntity parentEntity, Long initId, String fileName) {

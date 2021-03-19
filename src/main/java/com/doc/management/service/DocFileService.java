@@ -10,7 +10,7 @@ public interface DocFileService {
 
 	PageInfo<DocFileEntity> findDocFileList(Integer pageNum, Integer pageSize);
 	
-	DocFileEntity findDocFileById(Integer id);
+	DocFileEntity findDocFileById(Long id);
 	
 	Integer save(DocFileEntity entity);
 	
@@ -19,4 +19,8 @@ public interface DocFileService {
 	List<DocFileVO> findDirFileList();
 	
 	List<DocFileVO> findDirFileListByDirPath(String dirFilePath);
+	
+	List<DocFileEntity> findAllDirFileList();
+	
+	List<DocFileEntity> findAllDirTreeList();
 }
