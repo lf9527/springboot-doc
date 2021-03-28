@@ -4,7 +4,7 @@
 <mapper namespace="com.doc.management.dao.WorkNoticeMapper">
 	
 	<select id="findWorkNoticeList" resultType="com.doc.management.bean.WorkNoticeEntity">
-		SELECT * FROM work_notice_t
+		SELECT * FROM work_notice_t order by create_date desc
 	</select>
 	
 	<select id="findWorkNoticeById" parameterType="Integer"
