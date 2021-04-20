@@ -48,7 +48,7 @@
 		)
 	</insert>
 	
-	<delete id="delete" parameterType="Integer">
+	<delete id="delete" parameterType="Long">
 		delete from doc_file_t where id = #{id}
 	</delete>
 </mapper>

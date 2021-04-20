@@ -68,7 +68,7 @@ public class DocFileController {
 	
 	@CrossOrigin
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	public Integer delete(@PathVariable("id") Integer id) {
+	public Integer delete(@PathVariable("id") Long id) {
 		
 		return docFileService.delete(id);
 	}

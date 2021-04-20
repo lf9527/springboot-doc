@@ -14,7 +14,7 @@ public interface DocFileService {
 	
 	Integer save(DocFileEntity entity);
 	
-	Integer delete(Integer id);
+	Integer delete(Long id);
 	
 	List<DocFileVO> findDirFileList();
 	

@@ -12,7 +12,7 @@ public interface DocFileMapper {
 	
 	Integer insert(DocFileEntity entity);
 	
-	Integer delete(Integer id);
+	Integer delete(Long id);
 
 	List<DocFileEntity> findAllDirFileList(Long parentId);
 }

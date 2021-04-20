@@ -14,6 +14,7 @@ import com.doc.management.bean.DocFileEntity;
 import com.doc.management.constant.Constant;
 import com.doc.management.dao.DocFileMapper;
 import com.doc.management.service.DocFileService;
+import com.doc.management.utils.FileUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -46,8 +47,10 @@ public class DocFileServiceImpl implements DocFileService {
 	}
 
 	@Override
-	public Integer delete(Integer id) {
-		
+	public Integer delete(Long id) {
+		DocFileEntity entity = docFileMapper.findDocFileById(id);
+		String filePath = dirPath.substring(0, dirPath.lastIndexOf(Constant.separator)) + Constant.separator + entity.getFilePath() + Constant.separator + entity.getFileName();
+		FileUtil.deleteFile(filePath);
 		return docFileMapper.delete(id);
 	}
 

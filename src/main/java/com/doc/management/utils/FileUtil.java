@@ -101,5 +101,13 @@ public class FileUtil {
         out.write(file);
         out.flush();
         out.close();
-   }
+	}
+    
+    public static boolean deleteFile(String filePath) {
+    	File file = new File(filePath);
+    	if(file.exists() && file.isFile()) {
+    		return file.delete();
+    	}
+    	return false;
+    }
 }
