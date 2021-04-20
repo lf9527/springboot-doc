@@ -17,7 +17,7 @@ public class WorkNoticeServiceImpl implements WorkNoticeService {
 
 	@Override
 	public PageInfo<WorkNoticeEntity> findWorkNoticeList(Integer pageNum, Integer pageSize) {
-		return PageHelper.startPage(pageNum, pageSize)
+		return PageHelper.startPage(pageNum, pageSize).setOrderBy("create_date desc")
 					.doSelectPageInfo(() -> workNoticeMapper.findWorkNoticeList());
 	}
 
