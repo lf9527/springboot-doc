@@ -222,7 +222,10 @@ public class FileController {
 		if(StringUtil.isNotEmpty(parentFilePath)){
 			if(parentFilePath.indexOf(Constant.separator) > -1){
 				baseDirPath = dirPath.substring(0, dirPath.lastIndexOf(Constant.separator));
-				this.loopDirPath(baseDirPath, parentFilePath, parentId);
+				DocFileEntity docPathFile = this.loopDirPath(baseDirPath, parentFilePath, parentId);
+				if(docPathFile != null){
+					parentId = docPathFile.getId();
+				}
 				baseDirPath += Constant.separator + parentFilePath;
 			}
 		}
@@ -242,13 +245,14 @@ public class FileController {
 		return new ResponseEntity<String>("success", HttpStatus.OK);
 	}
 	
-	private void loopDirPath(String baseDirPath, String dirFilePath, Long parentId){
+	private DocFileEntity loopDirPath(String baseDirPath, String dirFilePath, Long parentId){
 		if(StringUtil.isEmpty(dirFilePath)){
-			return;
+			return null;
 		}
 		String[] dirPathArr = dirFilePath.trim().split(Constant.separator);
 		String dirPathTemp = null;
 		String filePath = null;
+		DocFileEntity docFile = null;
 		for(String path : dirPathArr){
 			if(null == dirPathTemp) {
 				dirPathTemp = path;
@@ -259,7 +263,7 @@ public class FileController {
 				filePath = dirPathTemp.substring(0, dirPathTemp.lastIndexOf(Constant.separator));
 			}
 			if(FileUtil.mkDir(baseDirPath, dirPathTemp) == 1){//new dir
-				DocFileEntity docFile = new DocFileEntity();
+				docFile = new DocFileEntity();
 	    		docFile.setIsDir(1L);
 	    		docFile.setFileName(path);
 	    		docFile.setParentId(parentId);
@@ -270,5 +274,7 @@ public class FileController {
 	    		parentId = docFile.getId();
 			}
 		}
+		
+		return docFile;
 	}
 }
