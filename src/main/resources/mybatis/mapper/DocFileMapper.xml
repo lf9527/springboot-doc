@@ -49,6 +49,6 @@
 	</insert>
 	
 	<delete id="delete" parameterType="Long">
-		delete from doc_file_t where id = #{id}
+		delete from doc_file_t where (file_name,parent_id,is_dir) in(select a.file_name,a.parent_id,a.is_dir from (select file_name,parent_id,is_dir from doc_file_t where id = #{id}) a)
 	</delete>
 </mapper>
