@@ -28,6 +28,11 @@
 		SELECT * FROM doc_file_t WHERE id = #{id}
 	</select>
 	
+	<select id="existsDocFile" parameterType="DocFileEntity"
+		resultType="Integer">
+		SELECT count(1) FROM doc_file_t WHERE parent_id = #{parentId} and file_name = #{fileName} and is_dir = #{isDir}
+	</select>
+	
 	<insert id="insert" parameterType="com.doc.management.bean.DocFileEntity"
 		useGeneratedKeys="true" keyProperty="id">
 		insert into doc_file_t

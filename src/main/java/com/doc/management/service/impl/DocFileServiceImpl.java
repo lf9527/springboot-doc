@@ -42,7 +42,10 @@ public class DocFileServiceImpl implements DocFileService {
 
 	@Override
 	public Integer save(DocFileEntity entity) {
-		
+		Integer existsCount = docFileMapper.existsDocFile(entity);
+		if(existsCount != null && existsCount > 0){
+			return 1;
+		}
 		return docFileMapper.insert(entity);
 	}
 

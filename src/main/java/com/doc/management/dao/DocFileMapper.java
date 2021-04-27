@@ -10,6 +10,8 @@ public interface DocFileMapper {
 	
 	DocFileEntity findDocFileById(Long id);
 	
+	Integer existsDocFile(DocFileEntity entity);
+	
 	Integer insert(DocFileEntity entity);
 	
 	Integer delete(Long id);
