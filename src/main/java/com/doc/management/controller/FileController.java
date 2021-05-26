@@ -50,63 +50,6 @@ public class FileController {
 	private DocFileService docFileService;
 
 	private String separator = Constant.separator;
-	
-	@CrossOrigin
-	@RequestMapping(value = "/api/loadExcel/{id}", method = RequestMethod.GET)
-	@ResponseBody
-	public String loadExcel(@PathVariable("id") Integer id) {
-		try {
-			// String filePath = "E:\\vue3\\新建 Microsoft Excel 工作表.xlsx";
-			String workbookJSON;
-			Workbook workbook = new Workbook();
-			workbook.open(dirPath + separator + "新建 Microsoft Excel 工作表.xlsx");
-
-			IWorksheet sheet = workbook.getWorksheets().get("Sheet1");
-			sheet.getRange("C4:AA6").setLocked(false);
-			sheet.setProtection(true);
-
-			workbookJSON = workbook.toJson();
-			return workbookJSON;
-			// return "workbookJSON workbookJSON";
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return "0";
-	}
-
-	@CrossOrigin
-	@RequestMapping(value = "/api/loadFile", method = RequestMethod.GET)
-	public ResponseEntity getFile(HttpServletResponse response,
-			@RequestParam(value = "filePath", required = true) String filePath) {
-		File file = new File(filePath);
-		if (file.exists() && !file.isDirectory()) {
-			HttpHeaders headers = new HttpHeaders();
-			headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-			headers.add("Pragma", "no-cache");
-			headers.add("Expires", "0");
-			headers.add("Last-Modified", new Date().toString());
-			headers.add("ETag", String.valueOf(System.currentTimeMillis()));
-			try {
-				headers.add("Content-Disposition",
-						"attachment; filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
-
-				URL url = new URL("file:///" + file);
-				headers.add("Content-Type", url.openConnection().getContentType());
-				// 下载成功返回二进制流
-				return ResponseEntity.ok().headers(headers).contentLength(file.length())
-						// .contentType(MediaType.APPLICATION_OCTET_STREAM)
-						.contentType(MediaType.parseMediaType("application/octet-stream"))
-						// .contentType(MediaType.parseMediaType("application/vnd.oasis.opendocument.spreadsheet;charset=utf-8"))
-						.body(FileUtils.readFileToByteArray(file));
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return new ResponseEntity<String>("not content 204", HttpStatus.NO_CONTENT);
-			}
-		} else {
-			return new ResponseEntity<String>("not content 204", HttpStatus.NO_CONTENT);
-		}
-	}
 
 	@CrossOrigin
 	@RequestMapping(value = "/api/download/{id}", method = RequestMethod.GET)
@@ -183,28 +126,6 @@ public class FileController {
 	}
 	
 	@CrossOrigin
-	@RequestMapping(value = "/api/uploadMulti", method = RequestMethod.POST)
-	public ResponseEntity<String> uploadFile(MultipartFile[] files, @RequestBody DocFileVO docFile) throws IOException{
-		
-		if(files.length == 0){
-			return new ResponseEntity<String>("请选择要上传的文件", HttpStatus.FORBIDDEN);
-		}
-		for (MultipartFile multipartFile : files) {
-			if(multipartFile.isEmpty()){
-				return new ResponseEntity<String>("文件上传失败", HttpStatus.NOT_FOUND);
-			}
-			byte[] fileBytes = multipartFile.getBytes();
-			String filePath = dirPath + separator + docFile.getFilePath();
-			//取得当前上传文件的文件名称
-			String originalFilename = multipartFile.getOriginalFilename();
-			//生成文件名
-			String fileName = UUID.randomUUID() +"&"+ originalFilename;
-			FileUtil.uploadFile(fileBytes, filePath, fileName);
-		}
-
-		return new ResponseEntity<String>("success", HttpStatus.OK);
-	}
-	@CrossOrigin
 	@RequestMapping(value = "/api/uploadSingle", method = RequestMethod.POST)
 	public ResponseEntity<String> uploadSingleFile(@RequestParam(value = "file",required = false)MultipartFile file, DocFileEntity docFile) throws IOException{
 		
@@ -236,7 +157,7 @@ public class FileController {
 		FileUtil.uploadFile(fileBytes, baseDirPath, fileName);
 		docFile.setNewFileName(fileName);
 		docFile.setFileName(originalFilename);
-		docFile.setFilePath(parentFilePath);
+		docFile.setFilePath(parentFilePath.substring(parentFilePath.lastIndexOf(Constant.separator) + 1));
 		docFile.setParentId(parentId);
 		docFile.setIsDir(0L);
 		docFileService.save(docFile);
@@ -253,13 +174,14 @@ public class FileController {
 		String filePath = null;
 		DocFileEntity docFile = null;
 		for(String path : dirPathArr){
+			filePath = path;
 			if(null == dirPathTemp) {
 				dirPathTemp = path;
-				filePath = path;
+//				filePath = path;
 			}
 			else {
 				dirPathTemp += Constant.separator + path;
-				filePath = dirPathTemp.substring(0, dirPathTemp.lastIndexOf(Constant.separator));
+//				filePath = dirPathTemp.substring(0, dirPathTemp.lastIndexOf(Constant.separator));
 			}
 			if(FileUtil.mkDir(baseDirPath, dirPathTemp) == 1){//new dir
 				docFile = new DocFileEntity();
@@ -276,4 +198,85 @@ public class FileController {
 		
 		return docFile;
 	}
+	
+	@CrossOrigin
+	@RequestMapping(value = "/api/uploadMulti", method = RequestMethod.POST)
+	public ResponseEntity<String> uploadFile(MultipartFile[] files, @RequestBody DocFileVO docFile) throws IOException{
+		
+		if(files.length == 0){
+			return new ResponseEntity<String>("请选择要上传的文件", HttpStatus.FORBIDDEN);
+		}
+		for (MultipartFile multipartFile : files) {
+			if(multipartFile.isEmpty()){
+				return new ResponseEntity<String>("文件上传失败", HttpStatus.NOT_FOUND);
+			}
+			byte[] fileBytes = multipartFile.getBytes();
+			String filePath = dirPath + separator + docFile.getFilePath();
+			//取得当前上传文件的文件名称
+			String originalFilename = multipartFile.getOriginalFilename();
+			//生成文件名
+			String fileName = UUID.randomUUID() +"&"+ originalFilename;
+			FileUtil.uploadFile(fileBytes, filePath, fileName);
+		}
+
+		return new ResponseEntity<String>("success", HttpStatus.OK);
+	}
+	
+	@CrossOrigin
+	@RequestMapping(value = "/api/loadExcel/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	public String loadExcel(@PathVariable("id") Integer id) {
+		try {
+			// String filePath = "E:\\vue3\\新建 Microsoft Excel 工作表.xlsx";
+			String workbookJSON;
+			Workbook workbook = new Workbook();
+			workbook.open(dirPath + separator + "新建 Microsoft Excel 工作表.xlsx");
+
+			IWorksheet sheet = workbook.getWorksheets().get("Sheet1");
+			sheet.getRange("C4:AA6").setLocked(false);
+			sheet.setProtection(true);
+
+			workbookJSON = workbook.toJson();
+			return workbookJSON;
+			// return "workbookJSON workbookJSON";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "0";
+	}
+
+	@CrossOrigin
+	@RequestMapping(value = "/api/loadFile", method = RequestMethod.GET)
+	public ResponseEntity getFile(HttpServletResponse response,
+			@RequestParam(value = "filePath", required = true) String filePath) {
+		File file = new File(filePath);
+		if (file.exists() && !file.isDirectory()) {
+			HttpHeaders headers = new HttpHeaders();
+			headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+			headers.add("Pragma", "no-cache");
+			headers.add("Expires", "0");
+			headers.add("Last-Modified", new Date().toString());
+			headers.add("ETag", String.valueOf(System.currentTimeMillis()));
+			try {
+				headers.add("Content-Disposition",
+						"attachment; filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
+
+				URL url = new URL("file:///" + file);
+				headers.add("Content-Type", url.openConnection().getContentType());
+				// 下载成功返回二进制流
+				return ResponseEntity.ok().headers(headers).contentLength(file.length())
+						// .contentType(MediaType.APPLICATION_OCTET_STREAM)
+						.contentType(MediaType.parseMediaType("application/octet-stream"))
+						// .contentType(MediaType.parseMediaType("application/vnd.oasis.opendocument.spreadsheet;charset=utf-8"))
+						.body(FileUtils.readFileToByteArray(file));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return new ResponseEntity<String>("not content 204", HttpStatus.NO_CONTENT);
+			}
+		} else {
+			return new ResponseEntity<String>("not content 204", HttpStatus.NO_CONTENT);
+		}
+	}
+	
 }

@@ -16,5 +16,20 @@ public interface DocFileMapper {
 	
 	Integer delete(Long id);
 
+	/**
+	 * 查询所有子级结构记录
+	 * @param id
+	 * @return List<DocFileEntity>
+	 */
 	List<DocFileEntity> findAllDirFileList(Long parentId);
+	
+	/**
+	 * 查询所有父级结构记录
+	 * @param id
+	 * @return
+	 */
+	List<DocFileEntity> findAllParentDirFileList(Long id);
+
+	Integer update(DocFileEntity entity);
+	
 }
