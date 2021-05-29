@@ -15,8 +15,24 @@
 		</collection>
 	</resultMap>
 	
+	<resultMap type="DocFileEntity" id="docFileParentResultMap">
+		<id column="id" property="id" />
+		<result column="parent_id" property="parentId" />
+		<result column="file_name" property="fileName" />
+		<result column="new_file_name" property="newFileName" />
+		<result column="file_path" property="filePath" />
+		<result column="is_Dir" property="isDir" />
+		<result column="create_date" property="createDate" />
+		<collection property="children" javaType="java.util.List" ofType="DocFileEntity" select="findAllParentDirFileList" column="parent_id">
+		</collection>
+	</resultMap>
+	
 	<select id="findAllDirFileList" parameterType="Long" resultMap="docFileResultMap">
 		SELECT * FROM doc_file_t where parent_id= #{id}
+	</select>
+	
+	<select id="findAllParentDirFileList" parameterType="Long" resultMap="docFileParentResultMap">
+		SELECT * FROM doc_file_t where id= #{id}
 	</select>
 	
 	<select id="findDocFileList" resultType="com.doc.management.bean.DocFileEntity">
@@ -26,6 +42,11 @@
 	<select id="findDocFileById" parameterType="Long"
 		resultType="com.doc.management.bean.DocFileEntity">
 		SELECT * FROM doc_file_t WHERE id = #{id}
+	</select>
+	
+	<select id="existsDocFile" parameterType="DocFileEntity"
+		resultType="Integer">
+		SELECT count(1) FROM doc_file_t WHERE parent_id = #{parentId} and file_name = #{fileName} and is_dir = #{isDir}
 	</select>
 	
 	<insert id="insert" parameterType="com.doc.management.bean.DocFileEntity"
@@ -48,7 +69,14 @@
 		)
 	</insert>
 	
-	<delete id="delete" parameterType="Integer">
-		delete from doc_file_t where id = #{id}
+	<update id="update" parameterType="DocFileEntity">
+		update doc_file_t 
+		set file_name = #{fileName},
+		file_path = #{filePath}
+		where id = #{id}
+	</update>
+	
+	<delete id="delete" parameterType="Long">
+		delete from doc_file_t where (file_name,parent_id,is_dir) in(select a.file_name,a.parent_id,a.is_dir from (select file_name,parent_id,is_dir from doc_file_t where id = #{id}) a)
 	</delete>
 </mapper>

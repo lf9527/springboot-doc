@@ -10,9 +10,26 @@ public interface DocFileMapper {
 	
 	DocFileEntity findDocFileById(Long id);
 	
+	Integer existsDocFile(DocFileEntity entity);
+	
 	Integer insert(DocFileEntity entity);
 	
-	Integer delete(Integer id);
+	Integer delete(Long id);
 
+	/**
+	 * 查询所有子级结构记录
+	 * @param id
+	 * @return List<DocFileEntity>
+	 */
 	List<DocFileEntity> findAllDirFileList(Long parentId);
+	
+	/**
+	 * 查询所有父级结构记录
+	 * @param id
+	 * @return
+	 */
+	List<DocFileEntity> findAllParentDirFileList(Long id);
+
+	Integer update(DocFileEntity entity);
+	
 }

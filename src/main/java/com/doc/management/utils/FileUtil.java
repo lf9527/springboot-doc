@@ -42,14 +42,18 @@ public class FileUtil {
 		dirFile.add(entity);
 		findFileList(dir, dirFile, entity, initId, fileName);
 		System.out.println(dirFile);*/
-    	String originalFilename = "E:/vue3/gitcodeDocmanagement/dirFile";
+    	/*String originalFilename = "E:/vue3/gitcodeDocmanagement/dirFile";
     	String filePath = "dirFile/file1/file2/file3";
     	String dir = originalFilename.substring(0, originalFilename.lastIndexOf(Constant.separator));
     	System.out.println(dir);
     	filePath = filePath.substring(filePath.indexOf(dir) + dir.length() + 1);
     	System.out.println(filePath.indexOf("/")+1);
-    	System.out.println(filePath);
-    	
+    	System.out.println(filePath);*/
+    	String filePath = "dirFile";
+//    	String dir = filePath.substring(0, filePath.lastIndexOf(Constant.separator));
+//    	System.out.println(dir);
+    	String dirs = filePath.substring(filePath.lastIndexOf(Constant.separator) + 1);
+    	System.out.println(dirs);
 	}
     
     public static int mkDir(String dirPath, String dirFilePath){
@@ -101,5 +105,13 @@ public class FileUtil {
         out.write(file);
         out.flush();
         out.close();
-   }
+	}
+    
+    public static boolean deleteFile(String filePath) {
+    	File file = new File(filePath);
+    	if(file.exists() && file.isFile()) {
+    		return file.delete();
+    	}
+    	return false;
+    }
 }

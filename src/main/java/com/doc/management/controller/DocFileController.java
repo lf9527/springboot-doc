@@ -8,10 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.doc.management.VO.DocFileVO;
 import com.doc.management.bean.DocFileEntity;
 import com.doc.management.service.DocFileService;
 import com.github.pagehelper.PageInfo;
@@ -35,17 +33,17 @@ public class DocFileController {
 		return docFileService.findAllDirTreeList();
 	}
 	
-	@CrossOrigin
+	/*@CrossOrigin
 	@RequestMapping(value = "/getAllData", method = RequestMethod.GET)
 	public List<DocFileVO> getAllDataList() {
 		return docFileService.findDirFileList();
-	}
+	}*/
 	
-	@CrossOrigin
+	/*@CrossOrigin
 	@RequestMapping(value = "/getAllData/dirPath", method = RequestMethod.GET)
 	public List<DocFileVO> getAllDataByDirPath(@RequestParam("dirFilePath") String dirFilePath) {
 		return docFileService.findDirFileListByDirPath(dirFilePath);
-	}
+	}*/
 	
 	@CrossOrigin
 	@RequestMapping(value = "/{pageNum}/{pageSize}", method = RequestMethod.GET)
@@ -68,8 +66,21 @@ public class DocFileController {
 	
 	@CrossOrigin
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	public Integer delete(@PathVariable("id") Integer id) {
+	public Integer delete(@PathVariable("id") Long id) {
 		
 		return docFileService.delete(id);
+	}
+	
+	@CrossOrigin
+	@RequestMapping(value = "", method = RequestMethod.PUT)
+	public Integer update(@RequestBody DocFileEntity entity) {
+		
+		return docFileService.update(entity);
+	}
+	
+	@CrossOrigin
+	@RequestMapping(value = "/getAllParentDir/{id}", method = RequestMethod.GET)
+	public List<DocFileEntity> findAllParentDirFileList(@PathVariable("id") Long id) {
+		return docFileService.findAllParentDirFileList(id);
 	}
 }
