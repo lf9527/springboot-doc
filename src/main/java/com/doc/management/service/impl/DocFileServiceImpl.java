@@ -218,6 +218,7 @@ public class DocFileServiceImpl implements DocFileService {
 			return;
 		}
 		String filePath = this.getFullFilePath(entityList.get(0));
+		filePath = filePath.substring(0, filePath.lastIndexOf(separator));//删除本身目录
 		entity.setFilePath(filePath);
 	}
 	
