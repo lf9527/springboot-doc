@@ -36,7 +36,7 @@
 	</select>
 	
 	<select id="findDocFileList" resultType="com.doc.management.bean.DocFileEntity">
-		SELECT * FROM doc_file_t
+		SELECT * FROM doc_file_t where is_dir = 0
 	</select>
 	
 	<select id="findDocFileById" parameterType="Long"

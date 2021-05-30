@@ -28,7 +28,7 @@ public class DocFileServiceImpl implements DocFileService {
 
 	@Override
 	public PageInfo<DocFileEntity> findDocFileList(Integer pageNum, Integer pageSize) {
-		return PageHelper.startPage(pageNum, pageSize)
+		return PageHelper.startPage(pageNum, pageSize).setOrderBy("create_date desc")
 					.doSelectPageInfo(() -> docFileMapper.findDocFileList());
 	}
 
