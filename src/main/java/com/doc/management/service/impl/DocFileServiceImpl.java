@@ -54,8 +54,9 @@ public class DocFileServiceImpl implements DocFileService {
 		DocFileEntity entity = docFileMapper.findDocFileById(id);
 		this.resetFilePath(entity);
 		String filePath = dirPath.substring(0, dirPath.lastIndexOf(Constant.separator)) + Constant.separator + entity.getFilePath() + Constant.separator + entity.getFileName();
+		Integer deleteCount = docFileMapper.delete(id);
 		FileUtil.deleteFile(filePath);
-		return docFileMapper.delete(id);
+		return deleteCount;
 	}
 
 	/*@Override
