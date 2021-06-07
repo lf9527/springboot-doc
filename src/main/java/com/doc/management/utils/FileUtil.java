@@ -54,6 +54,10 @@ public class FileUtil {
 //    	System.out.println(dir);
     	String dirs = filePath.substring(filePath.lastIndexOf(Constant.separator) + 1);
     	System.out.println(dirs);
+    	
+    	/*String filePaths = "E:/vue3/gitcodeDocmanagement/dirFile/ss - 副本";
+    	boolean result = deleteFile(filePaths);
+    	System.out.println(result);*/
 	}
     
     public static int mkDir(String dirPath, String dirFilePath){
@@ -109,9 +113,28 @@ public class FileUtil {
     
     public static boolean deleteFile(String filePath) {
     	File file = new File(filePath);
-    	if(file.exists() && file.isFile()) {
+    	/*if(file.exists() && file.isFile()) {
     		return file.delete();
     	}
-    	return false;
+    	return false;*/
+    	return deleteFile(file);
+    }
+    
+    public static boolean deleteFile(File file) {
+    	boolean result = false;
+    	if(!file.exists()){
+    		return false;
+    	}
+    	if(file.isDirectory()){
+    		File[] childrenFiles = file.listFiles();
+    		for(File childFile : childrenFiles){
+    			result = deleteFile(childFile);
+    			if(!result){//删除失败
+    				return result;
+    			}
+    		}
+    	}
+    	result = file.delete();
+    	return result;
     }
 }
